@@ -55,17 +55,28 @@ const createNewBlock = (data) => {
     const newIndex = previousBlock.index + 1;
     const nextTimestamp = getNewTimestamp();
     const newHash = Block.caculateBlockHash(newIndex, previousBlock.hash, nextTimestamp, data);
-    return new Block({
+    const newBlock = new Block({
         index: newIndex,
         hash: newHash,
         previousHash: previousBlock.hash,
         timestamp: nextTimestamp,
         data,
     });
+    addBlock(newBlock);
+    return newBlock;
 };
+const getHashForBlock = (aBlock) => Block.caculateBlockHash(aBlock.index, aBlock.previousHash, aBlock.timestamp, aBlock.data);
 const isBlockValid = (candidateBlock, previousBlock) => Block.validateStructure(candidateBlock) &&
     previousBlock.index + 1 === candidateBlock.index &&
-    previousBlock.hash === candidateBlock.previousHash;
-console.log(createNewBlock('hello world'));
-console.log(createNewBlock('new worlde'));
+    previousBlock.hash === candidateBlock.previousHash &&
+    getHashForBlock(candidateBlock) === candidateBlock.hash;
+const addBlock = (candidateBlock) => {
+    if (isBlockValid(candidateBlock, getLatestBlock())) {
+        blockChain.push(candidateBlock);
+    }
+};
+createNewBlock('second Block');
+createNewBlock('third Block');
+createNewBlock('fourth Block');
+console.log(blockChain);
 //# sourceMappingURL=index.js.map

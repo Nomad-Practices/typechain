@@ -65,21 +65,41 @@ const createNewBlock = (data: string): Block => {
     nextTimestamp,
     data
   )
-  return new Block({
+  const newBlock: Block = new Block({
     index: newIndex,
     hash: newHash,
     previousHash: previousBlock.hash,
     timestamp: nextTimestamp,
     data,
   })
+  addBlock(newBlock)
+  return newBlock
 }
+
+const getHashForBlock = (aBlock: Block): string =>
+  Block.caculateBlockHash(
+    aBlock.index,
+    aBlock.previousHash,
+    aBlock.timestamp,
+    aBlock.data
+  )
 
 const isBlockValid = (candidateBlock: Block, previousBlock: Block): boolean =>
   Block.validateStructure(candidateBlock) &&
   previousBlock.index + 1 === candidateBlock.index &&
-  previousBlock.hash === candidateBlock.previousHash
+  previousBlock.hash === candidateBlock.previousHash &&
+  getHashForBlock(candidateBlock) === candidateBlock.hash
 
-console.log(createNewBlock('hello world'))
-console.log(createNewBlock('new worlde'))
+const addBlock = (candidateBlock: Block): void => {
+  if (isBlockValid(candidateBlock, getLatestBlock())) {
+    blockChain.push(candidateBlock)
+  }
+}
+
+createNewBlock('second Block')
+createNewBlock('third Block')
+createNewBlock('fourth Block')
+
+console.log(blockChain)
 
 export {}
