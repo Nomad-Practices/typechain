@@ -4,14 +4,26 @@ interface IHuman {
   gender: string
 }
 
-const person: IHuman = {
+class Human {
+  public name: string
+  private age: number
+  public gender: string
+
+  constructor({ name, age, gender }: IHuman) {
+    this.name = name
+    this.age = age
+    this.gender = gender
+  }
+}
+
+const person = new Human({
   name: "Nicolas",
   age: 30,
   gender: "male",
-}
+})
 
-const sayHi = ({ name, age, gender }: IHuman): void => {
-  console.log(`Hello ${name}, you are ${age} years old and ${gender}`)
+const sayHi = (x: Human) => {
+  console.log(`Hello ${x.name}, you are ${x.age} years old and ${x.gender}`)
 }
 
 sayHi(person)
